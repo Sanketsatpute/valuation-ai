@@ -1,0 +1,324 @@
+<!-- <div class="valuation-shell">
+  <div class="vc-panel">
+    <h2>Start New Valuation</h2>
+    <p class="muted">Choose a valuation method to begin</p>
+
+    <div class="method-list">
+      <a *ngFor="let m of methods" class="method" [routerLink]="['/valuation/new', m.key]">{{ m.label }}</a>
+    </div>
+  </div>
+
+  <div class="vc-stage">
+    <router-outlet></router-outlet>
+  </div>
+</div> -->
+
+
+<div class="valuation-shell">
+
+  <!-- ==============================
+       LEFT SIDEBAR
+  =============================== -->
+  <aside class="valuation-sidebar">
+
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+
+      <div class="sidebar-brand">
+
+        <div class="sidebar-brand-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 19V5M4 19h16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+
+            <path
+              d="m7 15 3-4 3 2 5-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div class="sidebar-brand-text">
+          <h2>Start New Valuation</h2>
+          <span>Choose a valuation method to begin</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- New Valuation -->
+    <div class="sidebar-section-label">
+      <span>VALUATION METHODS</span>
+
+      <span class="method-count">
+        {{ methods.length | number:'2.0-0' }}
+      </span>
+    </div>
+
+
+    <!-- Methods -->
+    <nav class="method-list">
+
+      <a
+        *ngFor="let m of methods"
+        class="method"
+        [routerLink]="['/valuation/new', m.key]"
+        routerLinkActive="active"
+        #rla="routerLinkActive"
+        [attr.aria-current]="rla.isActive ? 'page' : null"
+      >
+
+        <!-- Active indicator -->
+        <span class="method-active-line"></span>
+
+
+        <!-- Icon -->
+        <span class="method-icon">
+
+          <!-- FCFE -->
+          <!-- <svg
+            *ngIf="m.key === 'fcfe'"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M5 18h14M7 15V9m5 6V6m5 9v-8"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+          </svg> -->
+
+
+          <!-- FCFF -->
+          <!-- <svg
+            *ngIf="m.key === 'fcff'"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M5 18h14M7 15V8m5 7V5m5 10V9"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+          </svg> -->
+
+
+          <!-- NAV -->
+          <svg
+            *ngIf="m.key === 'nav'"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 3v18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+            />
+
+            <path
+              d="M5 7h14M5 17h14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+            />
+
+            <path
+              d="m7 7-2 4h4L7 7ZM17 7l-2 4h4l-2-4Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+
+          <!-- Fallback -->
+          <svg
+            *ngIf="
+              m.key !== 'fcfe' &&
+              m.key !== 'fcff' &&
+              m.key !== 'nav'
+            "
+            viewBox="0 0 24 24"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="8"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+
+            <path
+              d="M12 8v8M8 12h8"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+
+        </span>
+
+
+        <!-- Method information -->
+        <span class="method-content">
+
+          <span class="method-title-row">
+
+            <span class="method-name">
+              {{ m.label }}
+            </span>
+
+            <span
+              class="method-active-badge"
+              *ngIf="rla.isActive"
+            >
+              ACTIVE
+            </span>
+
+          </span>
+
+
+          <span class="method-description">
+
+            <ng-container [ngSwitch]="m.key">
+
+              <span *ngSwitchCase="'fcfe'">
+                Free Cash Flow to Equity
+              </span>
+
+              <span *ngSwitchCase="'fcff'">
+                Free Cash Flow to Firm
+              </span>
+
+              <span *ngSwitchCase="'nav'">
+                Net Asset Value
+              </span>
+
+              <span *ngSwitchDefault>
+                AI-powered valuation method
+              </span>
+
+            </ng-container>
+
+          </span>
+
+        </span>
+
+
+        <!-- Arrow -->
+        <span class="method-arrow">
+          →
+        </span>
+
+      </a>
+
+    </nav>
+
+
+    <!-- Divider -->
+    <div class="sidebar-divider"></div>
+
+
+    <!-- Current selection -->
+    <div class="current-selection">
+
+      <div class="current-selection-header">
+
+        <span>CURRENT METHOD</span>
+
+        <span class="selection-live">
+          <i></i>
+          READY
+        </span>
+
+      </div>
+
+
+      <div class="current-method-preview">
+
+        <div class="preview-icon">
+          ✦
+        </div>
+
+        <div class="preview-content">
+
+          <span>VALUATION ENGINE</span>
+
+          <strong>
+            AI Assisted
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Bottom AI section -->
+    <div class="sidebar-bottom">
+
+      <div class="ai-sidebar-card">
+
+        <div class="ai-sidebar-icon">
+          ✦
+        </div>
+
+        <div class="ai-sidebar-content">
+
+          <strong>
+            AI Valuation Engine
+          </strong>
+
+          <span>
+            NVIDIA Nemotron 3 Ultra
+          </span>
+
+        </div>
+
+        <span class="ai-status-dot"></span>
+
+      </div>
+
+
+      <div class="sidebar-footer">
+
+        <span>ValuAI</span>
+
+        <span>v0.1</span>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ==============================
+       MAIN STAGE
+  =============================== -->
+  <main class="vc-stage">
+
+    <router-outlet></router-outlet>
+
+  </main>
+
+</div>

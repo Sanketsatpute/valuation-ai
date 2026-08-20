@@ -1,0 +1,56 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">VA</div>
+      <h1>Valuations</h1>
+    </div>
+
+    <nav>
+      <a class="nav-item active">Overview</a>
+      <a class="nav-item">Properties</a>
+      <a class="nav-item">Analytics</a>
+      <a class="nav-item">Reports</a>
+      <a class="nav-item">Settings</a>
+    </nav>
+
+    <div class="sidebar-footer">Signed in as <strong>Analyst</strong></div>
+  </aside>
+
+  <main class="main-area">
+    <header class="main-header">
+      <h2>{{ title }}</h2>
+      <div class="header-actions">
+        <a class="btn primary" routerLink="/valuation/new">New Valuation</a>
+        <button class="btn">Import</button>
+      </div>
+    </header>
+
+    <section class="metrics">
+      <div class="metric-card" *ngFor="let m of metrics">
+        <div class="metric-label">{{ m.label }}</div>
+        <div class="metric-value">{{ m.value }}</div>
+        <div class="metric-change">{{ m.change }}</div>
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <div class="card chart">
+        <h3>Portfolio Trend</h3>
+        <div class="chart-placeholder">[Chart placeholder]</div>
+      </div>
+
+      <div class="card recent">
+        <h3>Recent Valuations</h3>
+        <ul>
+          <li *ngFor="let r of recentValuations">
+            <div class="rv-left">{{ r.id }}</div>
+            <div class="rv-mid">{{ r.address }}</div>
+            <div class="rv-right">{{ r.value }}</div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="main-footer">Last updated: just now</footer>
+  </main>
+</div>

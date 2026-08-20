@@ -1,0 +1,1767 @@
+<ng-container *ngIf="!showResults">
+<div class="valuation-page">
+
+  <!-- Background decoration -->
+  <div class="bg-glow bg-glow-one"></div>
+  <div class="bg-glow bg-glow-two"></div>
+
+  <!-- Header -->
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-mark">
+        <span class="brand-mark-inner">V</span>
+      </div>
+
+      <div class="brand-copy">
+        <div class="brand-name">
+          ValuAI
+        </div>
+        <div class="brand-tagline">
+          Intelligent Valuation Platform
+        </div>
+      </div>
+    </div>
+
+    <div class="header-right">
+
+      <div class="ai-status">
+        <span class="status-dot"></span>
+
+        <div>
+          <span class="status-title">
+            AI Engine
+          </span>
+
+          <span class="status-value">
+            Nemotron 3 Ultra
+          </span>
+        </div>
+      </div>
+
+      <div class="header-divider"></div>
+
+      <!-- <div class="date-display">
+        <span class="date-label">VALUATION DATE</span>
+        <span class="date-value">20 Aug 2026</span>
+      </div> -->
+
+    </div>
+
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+
+    <!-- Page heading -->
+    <section class="page-heading">
+
+      <div>
+
+        <div class="eyebrow">
+          <span class="eyebrow-line"></span>
+          VALUATION WORKSPACE
+        </div>
+
+        <h1>
+          Net Asset Value
+          <span>Valuation</span>
+        </h1>
+
+        <p>
+          Assess the intrinsic asset-backed value of a company
+          with AI-assisted analysis.
+        </p>
+
+      </div>
+
+      <!-- <div class="method-badge">
+
+        <div class="method-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 3v18M5 8h14M5 16h14M7 8l-2 4h4L7 8ZM17 8l-2 4h4l-2-4Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div>
+          <span>METHOD</span>
+          <strong>Adjusted NAV</strong>
+        </div>
+
+        <span class="chevron">⌄</span>
+
+      </div> -->
+
+    </section>
+
+
+    <!-- Main form -->
+    <section class="workspace">
+
+      <!-- LEFT -->
+      <!-- <div class="form-column"> -->
+      <form [formGroup]="navForm"
+            (ngSubmit)="submit()"
+            class="form-column" class="form-column">
+        
+
+        <!-- Company -->
+        <div class="card company-card">
+
+          <div class="card-header">
+
+            <div class="section-number">
+              01
+            </div>
+
+            <div>
+              <h2>Company Information</h2>
+              <p>Identify the entity being valued</p>
+            </div>
+
+          </div>
+
+
+          <div class="company-search">
+
+            <div class="company-avatar">
+
+                {{
+                selectedCompany
+                    ? selectedCompany?.ticker?.substring(0, 3)
+                    : 'CO'
+                }}
+
+            </div>
+
+
+            <div
+                class="company-input"
+                formGroupName="company"
+            >
+
+                <label>
+                COMPANY
+                </label>
+
+
+                <input
+                type="text"
+                formControlName="name"
+                placeholder="Search company name or ticker..."
+                autocomplete="off"
+                (input)="searchCompany($event)"
+                />
+
+
+                <!-- SEARCH RESULTS -->
+
+                <div
+                class="company-results"
+                *ngIf="filteredCompanies.length"
+                >
+
+                <button
+                    type="button"
+                    class="company-result"
+                    *ngFor="let company of filteredCompanies"
+                    (click)="selectCompany(company)"
+                >
+
+                    <div class="result-company-avatar">
+
+                    {{ company.ticker.substring(0, 3) }}
+
+                    </div>
+
+
+                    <div class="result-company-info">
+
+                    <strong>
+                        {{ company.name }}
+                    </strong>
+
+                    <span>
+                        {{ company.exchange }}:
+                        {{ company.ticker }}
+
+                        <i></i>
+
+                        {{ company.sector }}
+
+                        <i></i>
+
+                        {{ company.industry }}
+                    </span>
+
+                    </div>
+
+
+                    <span class="result-arrow">
+                    →
+                    </span>
+
+                </button>
+
+                </div>
+
+
+                <!-- HIDDEN VALUES -->
+
+                <input
+                type="hidden"
+                formControlName="ticker"
+                />
+
+                <input
+                type="hidden"
+                formControlName="exchange"
+                />
+
+
+                <!-- SELECTED COMPANY META -->
+
+                <div
+                class="company-meta"
+                *ngIf="selectedCompany"
+                >
+
+                <span>
+                    <i></i>
+
+                    {{ selectedCompany.exchange }}:
+                    {{ selectedCompany.ticker }}
+                </span>
+
+                <span>
+                    {{ selectedCompany.sector }}
+                </span>
+
+                <span>
+                    {{ selectedCompany.industry }}
+                </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="company-search-button"
+            >
+                ⌕
+            </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Valuation context -->
+        <div class="card">
+
+          <div class="card-header">
+
+            <div class="section-number">
+              02
+            </div>
+
+            <div>
+              <h2>Valuation Context</h2>
+              <p>Define the basis of the assessment</p>
+            </div>
+
+          </div>
+
+
+          <div class="form-grid" formGroupName="valuationContext">
+
+            <!-- Valuation Date -->
+            <div class="field">
+
+              <label>
+                VALUATION DATE
+                <span class="required">*</span>
+              </label>
+
+              <div class="input-wrapper">
+
+                <svg viewBox="0 0 24 24">
+                  <rect
+                    x="3"
+                    y="5"
+                    width="18"
+                    height="16"
+                    rx="2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"/>
+                  <path
+                    d="M16 3v4M8 3v4M3 10h18"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"/>
+                </svg>
+
+                <input
+                  type="text"
+                  formControlName="valuationDate"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- Currency -->
+            <div class="field">
+
+              <label>
+                CURRENCY
+              </label>
+
+              <div class="select-wrapper">
+
+                <span class="currency-symbol">
+                  ₹
+                </span>
+
+                <select formControlName="currency">
+                  <option>INR — Indian Rupee</option>
+                  <option>USD — US Dollar</option>
+                  <option>EUR — Euro</option>
+                </select>
+
+                <span class="select-arrow">⌄</span>
+
+              </div>
+
+            </div>
+
+
+            <!-- Purpose -->
+            <div class="field">
+
+              <label>
+                VALUATION PURPOSE
+              </label>
+
+              <div class="select-wrapper">
+
+                <select formControlName="valuationPurpose">
+                  <option>Investment Analysis</option>
+                  <option>Financial Reporting</option>
+                  <option>Transaction</option>
+                  <option>Internal Assessment</option>
+                </select>
+
+                <span class="select-arrow">⌄</span>
+
+              </div>
+
+            </div>
+
+
+            <!-- Basis -->
+            <div class="field">
+
+              <label>
+                VALUATION BASIS
+              </label>
+
+              <div class="select-wrapper">
+
+                <select formControlName="valuationBasis">
+                  <option>Going Concern</option>
+                  <option>Liquidation Basis</option>
+                </select>
+
+                <span class="select-arrow">⌄</span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Financial inputs -->
+        <div class="card financial-card">
+
+          <div class="card-header">
+
+            <div class="section-number">
+              03
+            </div>
+
+            <div>
+              <h2>Financial Inputs</h2>
+              <p>Core balance sheet information</p>
+            </div>
+
+            <div class="data-source">
+              <span class="source-dot"></span>
+              Manual Input
+            </div>
+
+          </div>
+
+
+          <div class="financial-grid" formGroupName="financialInputs">
+
+            <!-- Assets -->
+            <div class="financial-field">
+
+              <div class="field-label">
+
+                <div class="field-icon assets">
+                  $
+                </div>
+
+                <div>
+                  <span>Total Assets</span>
+                  <small>As reported</small>
+                </div>
+
+              </div>
+
+              <div class="amount-input">
+
+                <span>₹</span>
+
+                <input
+                  type="text"
+                  formControlName="totalAssets"
+                />
+
+                <em>Cr</em>
+
+              </div>
+
+            </div>
+
+
+            <!-- Liabilities -->
+            <div class="financial-field">
+
+              <div class="field-label">
+
+                <div class="field-icon liabilities">
+                  −
+                </div>
+
+                <div>
+                  <span>Total Liabilities</span>
+                  <small>As reported</small>
+                </div>
+
+              </div>
+
+              <div class="amount-input">
+
+                <span>₹</span>
+
+                <input
+                  type="text"
+                  formControlName="totalLiabilities"
+                />
+
+                <em>Cr</em>
+
+              </div>
+
+            </div>
+
+
+            <!-- Shares -->
+            <div class="financial-field">
+
+              <div class="field-label">
+
+                <div class="field-icon shares">
+                  #
+                </div>
+
+                <div>
+                  <span>Shares Outstanding</span>
+                  <small>Issued & paid-up</small>
+                </div>
+
+              </div>
+
+              <div class="amount-input">
+
+                <input
+                  type="text"
+                  formControlName="sharesOutstanding"
+                />
+
+                <em>Cr</em>
+
+              </div>
+
+            </div>
+
+
+            <!-- Market price -->
+            <div class="financial-field market-field">
+
+              <div class="field-label">
+
+                <div class="field-icon market">
+                  ₹
+                </div>
+
+                <div>
+                  <span>Market Price</span>
+                  <small>Latest available</small>
+                </div>
+
+                <span class="live-pill">
+                  LIVE
+                </span>
+
+              </div>
+
+              <div class="amount-input">
+
+                <span>₹</span>
+
+                <input
+                  type="text"
+                  formControlName="marketPrice"
+                />
+
+                <em>/ share</em>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- AI data hint -->
+          <!-- <div class="ai-hint">
+
+            <div class="ai-hint-icon">
+
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"/>
+              </svg>
+
+            </div>
+
+            <div>
+
+              <strong>
+                AI-assisted data enrichment
+              </strong>
+
+              <p>
+                Financial and market data can be automatically
+                retrieved and validated in the next step.
+              </p>
+
+            </div>
+
+            <button>
+              Learn more
+            </button>
+
+          </div> -->
+
+        </div>
+
+
+        <!-- Advanced -->
+        <!-- <div class="advanced-card">
+
+          <div class="advanced-left">
+
+            <div class="advanced-icon">
+              +
+            </div>
+
+            <div>
+              <strong>Advanced adjustments</strong>
+              <span>
+                Fair value, goodwill, contingent liabilities,
+                tax adjustments and more
+              </span>
+            </div>
+
+          </div>
+
+          <button class="expand-button">
+            Configure
+            <span>→</span>
+          </button>
+
+        </div> -->
+
+
+        <!-- CTA -->
+        <div class="action-area">
+
+          <div class="action-note">
+
+            <span class="secure-icon">✦</span>
+
+            <span>
+              Calculation is deterministic.
+              AI provides interpretation and analysis.
+            </span>
+
+          </div>
+
+         <button
+            type="submit"
+            class="primary-button"
+            [disabled]="navForm.invalid || aiLoading"
+            >
+
+            <ng-container *ngIf="!aiLoading">
+
+                <span class="button-sparkle">
+                ✦
+                </span>
+
+                <span>
+                Run AI Valuation
+                </span>
+
+                <span class="button-arrow">
+                →
+                </span>
+
+            </ng-container>
+
+
+            <ng-container *ngIf="aiLoading">
+
+                <span class="ai-spinner"></span>
+
+                <span>
+                AI is analyzing...
+                </span>
+
+            </ng-container>
+
+            </button>
+
+        </div>
+
+    </form>
+      <!-- </div> -->
+
+
+      <!-- RIGHT SIDE -->
+      <aside class="insight-column">
+
+        <!-- AI card -->
+        <div class="ai-card">
+
+          <div class="ai-card-glow"></div>
+
+          <div class="ai-card-header">
+
+            <div class="ai-orb">
+              <span>✦</span>
+            </div>
+
+            <div>
+
+              <span class="ai-label">
+                AI VALUATION ENGINE
+              </span>
+
+              <strong>
+                Nemotron 3 Ultra
+              </strong>
+
+            </div>
+
+            <span class="online-dot"></span>
+
+          </div>
+
+
+          <div class="ai-divider"></div>
+
+
+          <div class="ai-description">
+
+            <p>
+              Your valuation will be evaluated across
+              <strong>asset quality, market positioning,
+              balance sheet strength</strong> and
+              potential valuation risks.
+            </p>
+
+          </div>
+
+
+          <div class="analysis-items">
+
+            <div class="analysis-item">
+
+              <span class="check">
+                ✓
+              </span>
+
+              <div>
+                <strong>Asset Quality</strong>
+                <span>Composition & realizability</span>
+              </div>
+
+            </div>
+
+            <div class="analysis-item">
+
+              <span class="check">
+                ✓
+              </span>
+
+              <div>
+                <strong>Market Comparison</strong>
+                <span>NAV vs current market price</span>
+              </div>
+
+            </div>
+
+            <div class="analysis-item">
+
+              <span class="check">
+                ✓
+              </span>
+
+              <div>
+                <strong>Risk Assessment</strong>
+                <span>Key valuation sensitivities</span>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="ai-footer">
+
+            <span>
+              POWERED BY
+            </span>
+
+            <strong>
+              NVIDIA Nemotron
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- Method card -->
+        <!-- <div class="method-info-card">
+
+          <div class="mini-header">
+
+            <span>
+              NAV METHODOLOGY
+            </span>
+
+            <span class="info-icon">
+              i
+            </span>
+
+          </div>
+
+
+          <div class="formula">
+
+            <div>
+              <span>Assets</span>
+              <strong>₹12,500 Cr</strong>
+            </div>
+
+            <div class="formula-symbol">
+              −
+            </div>
+
+            <div>
+              <span>Liabilities</span>
+              <strong>₹4,800 Cr</strong>
+            </div>
+
+            <div class="formula-symbol">
+              =
+            </div>
+
+            <div class="formula-result">
+              <span>Net Assets</span>
+              <strong>₹7,700 Cr</strong>
+            </div>
+
+          </div>
+
+
+          <div class="formula-divider"></div>
+
+
+          <div class="nav-preview">
+
+            <span>Indicative NAV / Share</span>
+
+            <strong>
+              ₹278.70
+            </strong>
+
+          </div>
+
+        </div> -->
+
+
+        <!-- Confidence -->
+        <!-- <div class="confidence-card">
+
+          <div class="confidence-header">
+
+            <span>
+              DATA READINESS
+            </span>
+
+            <strong>
+              4 / 4
+            </strong>
+
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-value"></div>
+          </div>
+
+          <p>
+            All required inputs are available for
+            the initial NAV calculation.
+          </p>
+
+        </div> -->
+
+      </aside>
+
+    </section>
+
+  </main>
+
+</div>
+</ng-container>
+
+<ng-container *ngIf="showResults && aiResponse">
+
+<div class="nav-result-page">
+
+  <!-- ==================================================
+       HEADER
+  =================================================== -->
+
+  <header class="result-header">
+
+    <div class="result-header-left">
+
+      <div class="result-status">
+        <span class="status-dot"></span>
+        AI VALUATION COMPLETE
+      </div>
+
+      <h1>
+        {{ submittedPayload?.company?.name }}
+      </h1>
+
+      <div class="result-meta">
+
+        <span>
+          {{ submittedPayload?.company?.exchange }}:
+          {{ submittedPayload?.company?.ticker }}
+        </span>
+
+        <i></i>
+
+        <span>
+          Net Asset Value
+        </span>
+
+        <i></i>
+
+        <span>
+          {{ submittedPayload?.valuationContext?.valuationDate }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="result-header-actions">
+
+      <button
+        type="button"
+        class="edit-button"
+        (click)="editInputs()"
+      >
+        <span>←</span>
+        Edit Inputs
+      </button>
+
+      <button
+        type="button"
+        class="export-button"
+      >
+        <span>↓</span>
+        Export Report
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- ==================================================
+       TOP CONTENT
+  =================================================== -->
+
+  <div class="result-main-grid">
+
+
+    <!-- =================================================
+         LEFT — VALUATION
+    ================================================== -->
+
+    <section class="valuation-panel">
+
+      <!-- KEY METRICS -->
+
+      <div class="metrics-grid">
+
+
+        <!-- NAV -->
+
+        <div class="metric-card primary">
+
+          <div class="metric-top">
+
+            <span>
+              INTRINSIC VALUE
+            </span>
+
+            <div class="metric-icon">
+              ✦
+            </div>
+
+          </div>
+
+          <strong [class.negative-value]="aiResponse.calculation.navPerShare < 0">
+            {{ aiResponse.calculation.navPerShare < 0 ? '−' : '₹' }}
+            {{ abs(aiResponse.calculation.navPerShare) | number:'1.2-2' }}
+          </strong>
+
+          <small>
+            NAV / Share
+          </small>
+
+        </div>
+
+
+        <!-- MARKET -->
+
+        <div class="metric-card">
+
+          <div class="metric-top">
+
+            <span>
+              MARKET PRICE
+            </span>
+
+            <div class="metric-icon market">
+              ↗
+            </div>
+
+          </div>
+
+          <strong>
+            ₹{{ aiResponse.calculation.marketPrice
+            | number:'1.2-2' }}
+          </strong>
+
+          <small>
+            Current market price
+          </small>
+
+        </div>
+
+
+        <!-- DISCOUNT -->
+
+        <div class="metric-card">
+
+          <div class="metric-top">
+
+            <span>
+              PREMIUM / DISCOUNT
+            </span>
+
+            <div class="metric-icon discount">
+              ↓
+            </div>
+
+          </div>
+
+          <strong
+            [ngClass]="{
+                'positive-value': getMarketStatus() === 'premium',
+                'negative-value': getMarketStatus() === 'discount',
+                'neutral-value': getMarketStatus() === 'fair'
+            }"
+          >
+            {{ formatPercentage(
+                aiResponse.calculation.premiumDiscountPercent
+            ) }}
+          </strong>
+
+          <small>
+            vs calculated NAV
+          </small>
+
+        </div>
+
+
+        <!-- NET ASSETS -->
+
+        <div class="metric-card">
+
+          <div class="metric-top">
+
+            <span>
+              NET ASSET VALUE
+            </span>
+
+            <div class="metric-icon">
+              ₹
+            </div>
+
+          </div>
+
+          <strong [class.negative-value]="aiResponse.calculation.netAssets < 0">
+            {{ aiResponse.calculation.netAssets < 0 ? '−' : '₹' }}
+            {{ abs(aiResponse.calculation.netAssets)
+            | number:'1.0-0' }}
+          </strong>
+
+          <small>
+            Crore
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- =============================================
+           NAV CALCULATION
+      ============================================== -->
+
+      <section class="result-card nav-calculation">
+
+        <div class="card-heading">
+
+          <div class="heading-icon">
+            ₹
+          </div>
+
+          <div>
+
+            <span>
+              NAV CALCULATION
+            </span>
+
+            <h2>
+              Net Asset Value Breakdown
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="calculation-content">
+
+          <div class="calculation-row">
+
+            <span>
+              Total Assets
+            </span>
+
+            <strong>
+              ₹{{ submittedPayload?.financialInputs?.totalAssets
+              | number:'1.0-0' }} Cr
+            </strong>
+
+          </div>
+
+
+          <div class="calculation-row liability">
+
+            <span>
+              Less: Total Liabilities
+            </span>
+
+            <strong>
+              − ₹{{ submittedPayload?.financialInputs?.totalLiabilities
+              | number:'1.0-0' }} Cr
+            </strong>
+
+          </div>
+
+
+          <div class="calculation-line"></div>
+
+
+          <div class="calculation-row net-assets">
+
+            <span>
+              Net Assets
+            </span>
+
+            <strong>
+              ₹{{ aiResponse.calculation.netAssets
+              | number:'1.0-0' }} Cr
+            </strong>
+
+          </div>
+
+
+          <div class="calculation-row">
+
+            <span>
+              Shares Outstanding
+            </span>
+
+            <strong>
+              {{ submittedPayload?.financialInputs?.sharesOutstanding }}
+              Cr
+            </strong>
+
+          </div>
+
+
+          <div class="nav-per-share">
+
+            <span>
+              NAV PER SHARE
+            </span>
+
+            <strong>
+              ₹{{ aiResponse.calculation.navPerShare
+              | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =============================================
+           MARKET POSITION
+      ============================================== -->
+
+      <section class="result-card market-position">
+
+        <div class="card-heading">
+
+          <div class="heading-icon market-heading">
+            ↕
+          </div>
+
+          <div>
+
+            <span>
+              MARKET POSITION
+            </span>
+
+            <h2>
+              NAV vs Market Price
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="valuation-scale">
+
+          <div class="scale-labels">
+
+            <span>
+              Market Price
+              <strong [class.negative-value]="aiResponse.calculation.marketPrice < 0">
+                {{ formatCurrency(aiResponse.calculation.marketPrice) }}
+              </strong>
+            </span>
+
+            <span>
+              NAV
+              <strong [class.negative-value]="aiResponse.calculation.navPerShare < 0">
+                {{ formatCurrency(aiResponse.calculation.navPerShare) }}
+              </strong>
+            </span>
+
+          </div>
+
+
+        <div class="scale">
+
+        <div class="scale-track"></div>
+
+
+        <!-- MARKET PRICE -->
+
+        <div
+            class="market-marker"
+            [style.left.%]="getMarketPosition()"
+        >
+
+            <div></div>
+
+            <span>
+            MARKET
+            </span>
+
+        </div>
+
+
+        <!-- NAV -->
+
+        <div
+            class="nav-marker"
+            [style.left.%]="getNavPosition()"
+        >
+
+            <div></div>
+
+            <span>
+            NAV
+            </span>
+
+        </div>
+
+        </div>
+
+
+          <div class="scale-bottom">
+
+            <span [ngClass]="{
+                    'positive-text': getMarketStatus() === 'premium',
+                    'negative-text': getMarketStatus() === 'discount',
+                    'neutral-text': getMarketStatus() === 'fair'
+                }">
+              {{ getMarketComparisonText() }}
+            </span>
+
+            <strong
+            [ngClass]="{
+                'positive-value': getMarketStatus() === 'premium',
+                'negative-value': getMarketStatus() === 'discount',
+                'neutral-value': getMarketStatus() === 'fair'
+            }">
+              {{ aiResponse.calculation.premiumDiscountPercent
+              | number:'1.2-2' }}%
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =============================================
+           AI INSIGHTS
+      ============================================== -->
+
+      <section class="result-card insights-section">
+
+        <div class="card-heading">
+
+          <div class="heading-icon ai-heading">
+            ✦
+          </div>
+
+          <div>
+
+            <span>
+              AI ANALYSIS
+            </span>
+
+            <h2>
+              Key Valuation Insights
+            </h2>
+
+          </div>
+
+          <div class="insight-count">
+            {{ aiResponse.analysis.length }}
+            INSIGHTS
+          </div>
+
+        </div>
+
+
+        <div class="insights-grid">
+
+          <div
+            class="insight-card"
+            *ngFor="
+              let insight of aiResponse.analysis;
+              let i = index
+            "
+          >
+
+            <div class="insight-number">
+              {{ i + 1 | number:'2.0-0' }}
+            </div>
+
+            <p>
+              {{ insight }}
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </section>
+
+
+    <!-- =================================================
+         RIGHT — AI PANEL
+    ================================================== -->
+
+    <aside class="ai-result-panel">
+
+      <div class="ai-panel-glow"></div>
+
+
+      <!-- AI HEADER -->
+
+      <div class="ai-panel-header">
+
+        <div class="ai-title">
+
+          <div class="ai-logo">
+            ✦
+          </div>
+
+          <div>
+
+            <span>
+              AI VALUATION ENGINE
+            </span>
+
+            <strong>
+              Nemotron 3 Ultra
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="ai-online">
+          <span></span>
+          READY
+        </div>
+
+      </div>
+
+
+      <!-- AI ASSESSMENT -->
+
+      <div class="ai-assessment">
+
+        <span class="section-label">
+          VALUATION ASSESSMENT
+        </span>
+
+        <h2>
+          {{ aiResponse.marketComparison.status }}
+        </h2>
+
+        <p>
+          {{ aiResponse.valuationSummary }}
+        </p>
+
+      </div>
+
+
+      <!-- SIGNAL -->
+
+    <div class="ai-signal">
+
+    <div class="signal-header">
+
+        <span>
+        VALUATION SIGNAL
+        </span>
+
+        <strong
+        [ngClass]="{
+            'positive-value':
+            getMarketStatus() === 'premium',
+
+            'negative-value':
+            getMarketStatus() === 'discount',
+
+            'neutral-value':
+            getMarketStatus() === 'fair'
+        }"
+        >
+        {{ formatPercentage(
+            aiResponse.calculation.premiumDiscountPercent
+        ) }}
+        </strong>
+
+    </div>
+
+
+        <div class="signal-track">
+
+        <div
+            class="signal-fill"
+            [style.width.%]="getValuationSignalFill()"
+        ></div>
+
+        <div
+            class="signal-marker"
+            [style.left.%]="getValuationSignalPosition()"
+        ></div>
+
+        </div>
+
+
+    <div class="signal-labels">
+
+        <span>
+        DISCOUNT
+        </span>
+
+        <span>
+        FAIR VALUE
+        </span>
+
+        <span>
+        PREMIUM
+        </span>
+
+    </div>
+
+    </div>
+
+
+      <!-- QUICK FACTS -->
+
+      <div class="ai-facts">
+
+        <div class="ai-fact">
+
+          <span>
+            NAV / SHARE
+          </span>
+
+          <strong>
+            ₹{{ aiResponse.calculation.navPerShare
+            | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="ai-fact">
+
+          <span>
+            MARKET PRICE
+          </span>
+
+          <strong>
+            ₹{{ aiResponse.calculation.marketPrice
+            | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="ai-fact">
+
+          <span>
+            NET ASSETS
+          </span>
+
+          <strong [class.negative-value]="
+    aiResponse.calculation.netAssets < 0
+  ">
+            {{ aiResponse.calculation.netAssets < 0 ? '−' : '' }}₹{{
+                abs(aiResponse.calculation.netAssets)
+                | number:'1.0-0'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- DATA QUALITY -->
+
+<div class="data-quality">
+
+  <div class="quality-header">
+
+    <span>
+      DATA QUALITY
+    </span>
+
+    <strong
+      [ngClass]="{
+        'quality-excellent':
+          getDataQualityScore() >= 90,
+
+        'quality-good':
+          getDataQualityScore() >= 75 &&
+          getDataQualityScore() < 90,
+
+        'quality-fair':
+          getDataQualityScore() >= 50 &&
+          getDataQualityScore() < 75,
+
+        'quality-limited':
+          getDataQualityScore() < 50
+      }"
+    >
+      {{ getDataQualityLabel() }}
+    </strong>
+
+  </div>
+
+
+  <div class="quality-track">
+
+    <div
+      class="quality-fill"
+      [style.width.%]="getDataQualityScore()"
+    ></div>
+
+  </div>
+
+
+  <p>
+    {{ getDataQualityDescription() }}
+  </p>
+
+</div>
+
+
+      <!-- AI STATUS -->
+
+      <div class="ai-engine-status">
+
+        <div class="engine-status-icon">
+          ✦
+        </div>
+
+        <div>
+
+          <span>
+            ANALYSIS COMPLETE
+          </span>
+
+          <strong>
+            Reasoning Enabled
+          </strong>
+
+        </div>
+
+        <div class="status-check">
+          ✓
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+
+  <!-- ==================================================
+       RISKS + LIMITATIONS
+  =================================================== -->
+
+  <div class="bottom-grid">
+
+
+    <!-- RISKS -->
+
+    <section class="result-card">
+
+      <div class="card-heading">
+
+        <div class="heading-icon risk-heading">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            RISK ASSESSMENT
+          </span>
+
+          <h2>
+            Key Valuation Risks
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="risk-list">
+
+        <div
+          class="risk-item"
+          *ngFor="let risk of aiResponse.keyRisks"
+        >
+
+          <span class="risk-dot"></span>
+
+          <p>
+            {{ risk }}
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- LIMITATIONS -->
+
+    <section class="result-card">
+
+      <div class="card-heading">
+
+        <div class="heading-icon">
+          i
+        </div>
+
+        <div>
+
+          <span>
+            DATA QUALITY
+          </span>
+
+          <h2>
+            Data Limitations
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="limitation-list">
+
+        <div
+          class="limitation-item"
+          *ngFor="
+            let limitation of aiResponse.dataLimitations
+          "
+        >
+
+          <span>
+            •
+          </span>
+
+          <p>
+            {{ limitation }}
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- ==================================================
+       OVERALL ASSESSMENT
+  =================================================== -->
+
+  <section class="overall-assessment">
+
+    <div class="overall-icon">
+      ✦
+    </div>
+
+    <div>
+
+      <span>
+        AI OVERALL ASSESSMENT
+      </span>
+
+      <h2>
+        Investment Perspective
+      </h2>
+
+      <p>
+        {{ aiResponse.overallAssessment }}
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+
+  <div class="result-footer">
+
+    <span>
+      ● AI analysis completed
+    </span>
+
+    <span>
+      ValuAI · NAV Valuation
+    </span>
+
+  </div>
+
+</div>
+</ng-container>

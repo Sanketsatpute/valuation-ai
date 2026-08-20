@@ -1,0 +1,24 @@
+<div class="valuation-shell-compact">
+  <div class="card form-card">
+    <h3>FCFF Valuation</h3>
+    <p class="muted">Free Cash Flow to Firm — value the firm then derive equity value.</p>
+
+    <form class="grid">
+      <div class="field"><label>Company</label><input [(ngModel)]="model.company" name="company" /></div>
+      <div class="field"><label>Date</label><input type="date" [(ngModel)]="model.date" name="date" /></div>
+
+      <div class="field"><label>Latest FCFF</label><div class="input-group"><span class="prefix">$</span><input type="number" [(ngModel)]="model.latestFcff" name="latestFcff" /></div></div>
+      <div class="field"><label>Expected Growth (g)</label><input type="number" step="0.001" [(ngModel)]="model.growth" name="growth" /></div>
+
+      <div class="field"><label>Discount Rate (r)</label><input type="number" step="0.001" [(ngModel)]="model.discount" name="discount" /></div>
+      <div class="field"><label>Net Debt</label><div class="input-group"><span class="prefix">$</span><input type="number" [(ngModel)]="model.netDebt" name="netDebt" /></div></div>
+      <div class="field"><label>Shares Outstanding</label><input type="number" [(ngModel)]="model.sharesOutstanding" name="sharesOutstanding" /></div>
+    </form>
+
+    <div class="result">
+      <div><strong>Terminal Value:</strong> {{ formatted(terminalValue) }}</div>
+      <div><strong>Equity Value:</strong> {{ formatted(equityValue) }}</div>
+      <div><strong>Implied Per Share:</strong> {{ perShare ? formatted(perShare) : '—' }}</div>
+    </div>
+  </div>
+</div>
